@@ -1,0 +1,35 @@
+Implementing Zombie attacks, Beating up the Zombies and Crafting weapons.
+
+UML extende system.png is the corresponding UML Diagram.
+
+modify Zombie
+modify AttackAction
+new class CraftItemAction
+new class ZombieMace
+new class ZombieClub
+new class ZombieArm
+new class ZombieLeg
+new class ZombieMace
+new class ZombieClub
+new class CraftItemAction
+
+To implement using zombie limbs as weapons and crafting them into better weapons as a player the following new classes were created:
+ZombieArm, ZombieLeg, ZombieMace, ZombieClub and CraftItemAction
+
+CraftItemAction is a new Action that gets created and stored in the allowableActions attribute of a ZombieArm/Leg when one is created.
+It is intended that an option for the player to execute this action is added to their menu when a ZombieArm/Leg is in their inventory, thus crafting the arm/leg into a mace/club
+
+Zombie arms/legs can be picked up by any other actors, but can only be crafted by the player, the execute method will do nothing unless the actor is a player.
+
+Zombie class modified to have limbs and act according to their number of limbs.
+- add private attributes for arms and legs
+- add private attribute skippedTurn to track if zombie skipped moving in the previous turn
+- add getters for the arms and legs attributes for AttackAction class to use.
+- modify IntrinsicWeapon method to return a bite weapon 50% of the time
+- modify playTurn method such that when HuntBehaviour is the chosen behaviour, we check the number of legs, if 2 legs then move normally, if 1 leg then only move if skippedTurn is true(set skippedTurn flag accordingly), if 0 legs then return DoNothingAction.
+
+execute method in AttackAction modified to handle zombie limb dropping and attacking with weapon.
+- zombies drop limbs when they are the target of an attack and the attack is successful, dropping limbs according to the chances specified(if they have limbs left to drop, checked using getters from modified Zombie class).
+- attacking zombies check for a weapon at their current location, add it to their inventory before attacking with it.
+- if the attack is a bite, the zombie is healed
+zombie has 10% chance to add another line to the return variable result, "\n braaaaains".

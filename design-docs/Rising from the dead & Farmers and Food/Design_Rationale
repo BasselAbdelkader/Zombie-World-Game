@@ -1,0 +1,36 @@
+Implementing Rising From the Dead, Farmers and Food
+
+UML extende Assignment.png is the corresponding UML Diagram.
+
+new class RisingFromTheDead
+new class Farmer
+new class Food
+
+To implement Rising From the Dead, Farmers and Food the following new classes were created:
+RisingFromTheDead, FarmersAndFood
+
+RisingFromTheDead is added to create object of Zombie class.
+
+- add private boolean attribute isKilled
+- add getters and setters of isKilled attribute for Human class to use.
+- add a method riseTheDead which takes one boolean argument isKilled and returns Zombie object if turns are between 5-10.
+
+Farmer class is added extends Human Class
+
+- add a private boolean attribute isStandingPatchOfDirt
+- add a private boolean attribute isLeftAlone
+- add a private boolean attribute isStandingUnripeCrop
+- add a private boolean attribute isStandingRipeCrop
+- add getters and setters of isStandingPatchOfDirt attribute 33% of probablity sowingACrop method to use.
+- add getters and setters of isLeftAlone attribute for ripenCrop method to use.
+- add getters and setters of isStandingUnripeCrop attribute fertilize method to use.
+- add getters and setters of isStandingRipeCrop attribute harvest method to use by Farmer or Player.
+- add a method sowingACrop
+- add a method ripenCrop returns true after 20 turns.
+- add a method fertilize decreases the time left to ripen by 10 turns
+
+Food class is added
+- add a method harvest checks if called from farmer class dropeFoodOnGround method will be called, or if it called from Player class placeInPlayerInventory method will be called.
+- add a method eatFood called by Player class and Human class to recover some health.
+- add a method dropeFoodOnGround method
+- add a method placeInPlayerInventory method

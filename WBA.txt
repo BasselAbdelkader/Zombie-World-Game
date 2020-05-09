@@ -1,0 +1,7 @@
+Split the workload of all required tasks evenly between us.
+
+We will each complete half of the required deliverables and create tests for it. Then we will each review the other's completed deliverables and tests, suggest changes and add tests if required.
+
+Team communication for assigning tasks, arranging deadlines, discussing design and implementation all will be through Whatsapp
+
+Complete each assigned task by the agreed upon deadline.

@@ -1,0 +1,7 @@
+I have added 3 new classes in my game.
+1- Farmer : As description says Farmer is also a Human so following best practices of OOP I have extended Farmer class from Human class, and then added all extra properties and behaviors of Farmer.
+
+2- Food : Food class does not have any property but it contains 4 behaviors used by (Player, Human and Farmer) classes, just like player and human class can eatFood(), Farmer can harvest() that's why these classes have association with Food class.
+
+3- Rising From the Dead : whenever a human dies in the game it will reborn, for achieving this feature I have added a private boolean property in
+this class and a public method to set and get this property(using Encapsulation).

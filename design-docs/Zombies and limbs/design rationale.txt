@@ -19,11 +19,11 @@ New classes:
 To implement using zombie limbs as weapons and crafting them into better weapons as a player the following new classes were created:
 ZombieArm, ZombieLeg, ZombieMace, ZombieClub and CraftItemAction
 
-CraftItemAction is a new Action that gets created and stored in the allowableActions attribute of a ZombieArm/Leg when one is created.
+- CraftItemAction is a new Action that gets created and stored in the allowableActions attribute of a ZombieArm/Leg when one is created.
 It is intended that an option for the player to execute this action is added to their menu when a ZombieArm/Leg is in their inventory, thus crafting the arm/leg into a mace/club
 CraftItemAction should extend Action since the menu displays a list of Action objects.
 
-Zombie arms/legs can be picked up by any other actors, but can only be crafted by the player, the execute method will do nothing unless the actor is a player.
+- Zombie arms/legs can be picked up by any other actors, but can only be crafted by the player, the execute method will do nothing unless the actor is a player.
 Zombie arms and legs need to use functionality already implemented by WeaponItem class and it's parent classes, so just ZombieArm/Leg should extend WeaponItem. 
 
 Zombie class modified to have limbs and act according to their number of limbs.
@@ -41,4 +41,4 @@ execute method in AttackAction modified to handle zombie limb dropping and attac
 - if the attack is a bite, the zombie is healed
 zombie has 10% chance to add another line to the return variable result, "\n braaaaains".
 
-The extended functionality can be implemented by modifying the existing Zombie class and the AttackAction that it uses, so no need to create any new classes
+The required functionality can be implemented by modifying the existing Zombie class and the AttackAction class that it uses, so no need to create any new classes

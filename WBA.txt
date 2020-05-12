@@ -2,11 +2,17 @@ Split the workload of all required tasks evenly between us.
 
 We will each complete half of the required deliverables and create tests for it. Then we will each review the other's completed deliverables and tests, suggest changes and add tests if required.
 
-Team communication for assigning tasks, arranging deadlines, discussing design and implementation all will be through Whatsapp
+Team communication for assigning tasks, arranging deadlines, discussing design and implementation all will be through Whatsapp. Work breakdown by features to be implemented will go as the following:
+
+Beating up the Zombies- Ryan Chow
+Crafting Weapons- Ryan Chow
+Rising from the dead- Bassel Abdelkader
+Farmers and Food-Bassel Abdelkader
+
 
 Complete each assigned task by the agreed upon deadline.
 
 
 
-I Bassel Emad accept this WBA.
+I Bassel Abdelkader accept this WBA.
 I accept this WBA, Ryan Chow.

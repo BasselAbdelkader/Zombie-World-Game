@@ -9,6 +9,9 @@ import edu.monash.fit2099.engine.Exit;
 import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.Location;
 
+//Newly added imports
+import edu.monash.fit2099.engine.DoNothingAction;
+
 /**
  * Allows an Actor to wander around at random.
  * 
@@ -40,7 +43,30 @@ public class WanderBehaviour implements Behaviour {
         }
 		
 		if (!actions.isEmpty()) {
-			return actions.get(random.nextInt(actions.size()));
+			// the actor has a location to wander to, so
+			// if actor is a zombie, check legs before wander
+			if (actor.hasCapability(ZombieCapability.UNDEAD)) {
+				// Initialize default case: zombie does nothing
+				Action zombieAction = new DoNothingAction();
+				// already checked that actor is a zombie, safe to downcast Actor to Zombie
+				if (((Zombie) actor).legs() == 2) {
+					// zombie has 2 legs, wander normally
+					zombieAction = actions.get(random.nextInt(actions.size()));
+				} else if (((Zombie) actor).legs() == 1) {
+					// zombie has 1 leg, only wander if it skipped previous turn
+					if (((Zombie) actor).hasSkipped()) {
+						zombieAction = actions.get(random.nextInt(actions.size()));
+					}
+					((Zombie) actor).toggleSkip();
+				}
+				// appropriate action should have been set,
+				// if zombie has 0 legs, zombieAction should be the default case
+				return zombieAction;
+
+			} else {
+			// else actor is not a zombie, wander normally
+				return actions.get(random.nextInt(actions.size()));
+			}
 		}
 		else {
 			return null;

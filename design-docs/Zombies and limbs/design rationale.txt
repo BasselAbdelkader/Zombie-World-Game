@@ -34,11 +34,16 @@ Zombie class modified to have limbs and act according to their number of limbs.
 - modify IntrinsicWeapon method to return a bite weapon 50% of the time
 
 - modify playTurn method such that when HuntBehaviour is the chosen behaviour, we check the number of legs, if 2 legs then move normally, if 1 leg then only move if skippedTurn is true(set skippedTurn flag accordingly), if 0 legs then return DoNothingAction. (This could have also been implemented by modifying HuntBehaviour class and accessing the needed Zombie attributes using getters)
+**Decided to implement in HuntBehavior and WanderBehavior since both need to check zombie legs**
+**code for checking legs has to be repeated, unless playTurn is modified**
 
 execute method in AttackAction modified to handle zombie limb dropping and attacking with weapon.
 - zombies drop limbs when they are the target of an attack and the attack is successful, dropping limbs according to the chances specified(if they have limbs left to drop, checked using getters from modified Zombie class).
 - attacking zombies check for a weapon at their current location, add it to their inventory before attacking with it.
 - if the attack is a bite, the zombie is healed
 zombie has 10% chance to add another line to the return variable result, "\n braaaaains".
+**AttackAction depends on Location, IntrinsicWeapon, Zombie**
+**Likely need to add new ZombiePickupAction to zombie behavior**
+**May need to override getWeapon for Zombie class to add check for arms and fix bite/punch chance incorrectly high due to being called twice**
 
 The required functionality can be implemented by modifying the existing Zombie class and the AttackAction class that it uses, so no need to create any new classes

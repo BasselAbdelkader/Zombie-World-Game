@@ -7,6 +7,9 @@ import edu.monash.fit2099.engine.DoNothingAction;
 import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.IntrinsicWeapon;
 
+// new imports
+import java.util.Random;
+
 /**
  * A Zombie.
  * 
@@ -26,10 +29,51 @@ public class Zombie extends ZombieActor {
 		super(name, 'Z', 100, ZombieCapability.UNDEAD);
 	}
 	
+	// Newly added attributes
+	protected Random rand = new Random();
+	protected int arms = 2;
+	protected int legs = 2;
+	protected boolean skippedPrev = false;
+
+	// Newly added methods
+	public int legs() {
+		return legs;
+	}
+	public int arms() {
+		return arms;
+	}
+	public boolean hasSkipped() {
+		return skippedPrev;
+	}
+	public void toggleSkip() {
+		skippedPrev = !skippedPrev;
+	}
 
 	@Override
 	public IntrinsicWeapon getIntrinsicWeapon() {
-		return new IntrinsicWeapon(10, "punches");
+		float chance = rand.nextFloat();
+		// initialize weapon
+		// default case: zombie punches
+		IntrinsicWeapon weapon = new IntrinsicWeapon(10, "punches");
+
+		// if zombie has 2 arms
+		// 50% chance for zombie to bite rather than punch
+		if (arms == 2) {
+			if (chance > 0.5) {
+				weapon = new IntrinsicWeapon(15, "bites");
+			}
+		} else if (arms == 1) {
+		// if zombie has 1 arm
+		// 75% chance for zombie to bite rather than punch
+			if (chance > 0.25) {
+				weapon = new IntrinsicWeapon(15, "bites");
+			}
+		} else {
+		// if zombie has 0 arms, 100% chance to bite
+			weapon = new IntrinsicWeapon(15, "bites");
+		}
+
+		return weapon;
 	}
 
 	/**

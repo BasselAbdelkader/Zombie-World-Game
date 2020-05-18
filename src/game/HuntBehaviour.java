@@ -11,6 +11,9 @@ import edu.monash.fit2099.engine.Exit;
 import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.Location;
 
+// Newly added imports
+import edu.monash.fit2099.engine.DoNothingAction;
+
 /**
  * Returns a MoveAction that will take the Actor closer to the nearest instance of a target class.
  * 
@@ -90,7 +93,38 @@ public class HuntBehaviour implements Behaviour {
 
 	@Override
 	public Action getAction(Actor actor, GameMap map) {
-		return hunt(actor, map.locationOf(actor));
+		// If actor is a zombie, check it's legs before moving
+		if (actor.hasCapability(ZombieCapability.UNDEAD)) {
+			// Check if there are any targets to hunt,
+			// return early if there aren't
+			Action hunt = hunt(actor, map.locationOf(actor));
+			if (hunt == null) {
+				return null;
+			}
+
+			// initialize zombieAction
+			// default case: zombie has 0 legs, do nothing
+			Action zombieAction = new DoNothingAction();
+			// already checked that actor is a zombie, safe to downcast Actor to Zombie
+			if (((Zombie) actor).legs() == 2) {
+				// zombie has 2 legs, hunt normally
+				zombieAction = hunt;
+
+			} else if (((Zombie) actor).legs() == 1) {
+				// zombie has 1 leg, only hunt if it skipped previous turn
+				if (((Zombie) actor).hasSkipped()) {
+					zombieAction = hunt;
+				}
+				((Zombie) actor).toggleSkip();
+			}
+			// appropriate action should have been set,
+			// if zombie has 0 legs, zombieAction should be the default case
+			return zombieAction;
+
+		} else {
+		// else actor is not a zombie, hunt normally
+			return hunt(actor, map.locationOf(actor));
+		}
 	}
 
 }

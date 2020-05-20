@@ -44,6 +44,8 @@ execute method in AttackAction modified to handle zombie limb dropping and attac
 zombie has 10% chance to add another line to the return variable result, "\n braaaaains".
 **AttackAction depends on Location, IntrinsicWeapon, Zombie**
 **Likely need to add new ZombiePickupAction to zombie behavior**
-**May need to override getWeapon for Zombie class to add check for arms and fix bite/punch chance incorrectly high due to being called twice**
+**May need to override getWeapon for Zombie class to add check for arms and fix bite/punch chance incorrectly high due to being called twice****no, dont need since after we drop the weapon after losing last arm, we never pick up any other weapon**
+
+**added pickupbehavior to be used by zombie**
 
 The required functionality can be implemented by modifying the existing Zombie class and the AttackAction class that it uses, so no need to create any new classes

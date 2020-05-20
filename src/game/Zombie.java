@@ -20,6 +20,7 @@ import java.util.Random;
  */
 public class Zombie extends ZombieActor {
 	private Behaviour[] behaviours = {
+			new PickUpBehaviour(),
 			new AttackBehaviour(ZombieCapability.ALIVE),
 			new HuntBehaviour(Human.class, 10),
 			new WanderBehaviour()
@@ -42,6 +43,41 @@ public class Zombie extends ZombieActor {
 	public int arms() {
 		return arms;
 	}
+	// Returns string with name of which limb was removed or none if not possible
+	public String dropLimb() {
+		// Cases when we return early:
+		// no limbs left to drop, return "none"
+		if (arms == 0 && legs == 0) {
+			return "none";
+		}
+		// no arms left to drop, drop leg
+		if (arms == 0) {
+			legs -= 1;
+			return "leg";
+		}
+		// no legs left to drop, drop arm
+		if (legs == 0) {
+			arms -= 1;
+			return "arm";
+		}
+		
+		// can drop either arm or leg
+		// if limbIndex = 0 then drop arm
+		// if limbIndex = 1 then drop drop
+		int limbIndex = rand.nextInt(2);
+		String droppedLimb;
+		// if the drop fails, loop again to randomly choose a limb again
+		if (limbIndex == 0) {
+			arms -= 1;
+			droppedLimb = "arm";
+		} else {
+			legs -= 1;
+			droppedLimb = "leg";
+
+		}
+		return droppedLimb;
+	}
+
 	public boolean hasSkipped() {
 		return skippedPrev;
 	}
@@ -87,6 +123,12 @@ public class Zombie extends ZombieActor {
 	 */
 	@Override
 	public Action playTurn(Actions actions, Action lastAction, GameMap map, Display display) {
+		// 10% chance say braains each turn
+		float chance = rand.nextFloat();
+		if (chance < 0.1) {
+			display.println(this + " says: " + "Braaaaaaains");
+		}
+		
 		for (Behaviour behaviour : behaviours) {
 			Action action = behaviour.getAction(this, map);
 			if (action != null)

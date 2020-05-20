@@ -8,13 +8,7 @@ import edu.monash.fit2099.engine.Actor;
 import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.Item;
 import edu.monash.fit2099.engine.Weapon;
-
-// Newly added imports
-import edu.monash.fit2099.engine.IntrinsicWeapon;
 import edu.monash.fit2099.engine.WeaponItem;
-import edu.monash.fit2099.engine.Location;
-import java.util.List;
-
 
 /**
  * Special Action for attacking other Actors.
@@ -39,119 +33,187 @@ public class AttackAction extends Action {
 		this.target = target;
 	}
 
-	@Override
-	public String execute(Actor actor, GameMap map) {
-		// **Original implementation in the else block of this first if statement**
-		// if actor is a zombie, need to handle bite attack and
-		// picking up weapon before attacking
-		if (actor.hasCapability(ZombieCapability.UNDEAD)) {
-			// Downcast actor to a zombie since we need to check it's arms
-			Zombie zActor = (Zombie) actor;
-			// Initialize default zombie weapon
-			Weapon zWeapon = zActor.getIntrinsicWeapon();
-			// Look for a weapon in zombie's inventory
-			// only if zombie can wield it (has at least 1 arm)
-			if (zActor.arms() >= 1) {
-				zWeapon = zActor.getWeapon();
-				if (zWeapon instanceof IntrinsicWeapon) {
-				// Zombie does not have a weapon
-				// Try to find a weapon at the zombie's location
-					Location currentLocation = map.locationOf(zActor);
-					List<Item> items = currentLocation.getItems();
-					for (Item item : items) {
-						if (item instanceof WeaponItem) {
-							System.out.println("never");
-							// found a usable weapon at zombie's location
-							zActor.addItemToInventory(item);
-							currentLocation.removeItem(item);
-							zWeapon = item.asWeapon();
-						}
-					}
-				}
-			}
-			// calculate hit chances for different weapons
-			float chance = rand.nextFloat();
-			// success flag true when hit is successful
-			boolean success = false;
-			// punches have 40% hit chance
-			if (zWeapon.verb() == "punches") {
-				if (chance > 0.6) {
+	// Overloaded method: one for Zombie and one for Actor
+	// Zombie attack hit chance calculation
+	protected boolean calculateHit(Zombie zActor, String weaponVerb) {
+		float chance = rand.nextFloat();
+
+		// success flag is true when hit is successful
+		boolean success = false;
+			// With 2 arms:
+		if (zActor.arms() == 2) {
+			// punches have 80% hit chance
+			if (weaponVerb == "punches") {
+				if (chance < 0.8) {
 					success = true;
 				}
-			} else if (zWeapon.verb() == "bites") {
-			// bites have 80% hit chance
-				if (chance > 0.2) {
+			} else if (weaponVerb == "bites") {
+			// bites have 40% hit chance
+				if (chance < 0.4) {
 					success = true;
 				}
 			} else {
-				// weapons have 90% hit chance with 2 arms
-				if (zActor.arms() == 2) {
-					if (chance > 0.1) {
-						success = true;
-					}
-				} else {
-				// weapons have 45% hit chance with 2 arms
-					if (chance > 0.45) {
-						success = true;
-					}
+			// weapons have 90% hit chance
+				if (chance < 0.9) {
+					success = true;
 				}
 			}
-
-			// REPEATED CODE to be cleaned later
-			if (success) {
-				int damage = zWeapon.damage();
-				String result = actor + " " + zWeapon.verb() + " " + target + " for " + damage + " damage.";
-				target.hurt(damage);
-				if (!target.isConscious()) {
-					Item corpse = new PortableItem("dead " + target, '%');
-					map.locationOf(target).addItem(corpse);
-					
-					Actions dropActions = new Actions();
-					for (Item item : target.getInventory())
-						dropActions.add(item.getDropAction());
-					for (Action drop : dropActions)		
-						drop.execute(target, map);
-					map.removeActor(target);	
-					
-					result += System.lineSeparator() + target + " is killed.";
-					return result;
+		} else if (zActor.arms() == 1) {
+			// With 1 arm:
+			// punches have 60% hit chance
+			if (weaponVerb == "punches") {
+				if (chance < 0.6) {
+					success = true;
 				}
-				return result;
-
+			} else if (weaponVerb == "bites") {
+			// bites have 40% hit chance
+				if (chance < 0.4) {
+					success = true;
+				}
 			} else {
-				return actor + " misses " + target + ".";
+			// weapons have 45% hit chance
+				if (chance < 0.45) {
+					success = true;
+				}
 			}
-			
 		} else {
-			// Everything in this else block is the original implementation
-			Weapon weapon = actor.getWeapon();
-
-			if (rand.nextBoolean()) {
-				return actor + " misses " + target + ".";
-			}
-
-			int damage = weapon.damage();
-			String result = actor + " " + weapon.verb() + " " + target + " for " + damage + " damage.";
-
-			target.hurt(damage);
-			if (!target.isConscious()) {
-				Item corpse = new PortableItem("dead " + target, '%');
-				map.locationOf(target).addItem(corpse);
-				
-				Actions dropActions = new Actions();
-				for (Item item : target.getInventory())
-					dropActions.add(item.getDropAction());
-				for (Action drop : dropActions)		
-					drop.execute(target, map);
-				map.removeActor(target);	
-				
-				result += System.lineSeparator() + target + " is killed.";
-				return result;
+			// With 0 arms:
+			// bites have 40% hit chance
+			if (weaponVerb == "bites") {
+				if (chance < 0.4) {
+					success = true;
+				}
 			}
 		}
-		// TEMPORARY CODE
-		 System.out.println(actor);
-		 return "should not be here";
+
+		return success;
+	}
+	
+	// Actor(except Zombie) attack hit chance calculation
+	protected boolean calculateHit(Actor actor, String weaponVerb) {
+		if (rand.nextFloat() < 0.9) {
+			return true;
+		}
+		return false;
+	}
+
+	protected String handleZombieLimb(GameMap map) {
+		// target must be Zombie when this method is called
+		Zombie zTarget = (Zombie) target;
+		float chance = rand.nextFloat();
+		String output = "";
+		// 25% chance to drop a limb
+		if (chance < 0.25) {
+			String droppedLimb = zTarget.dropLimb();
+			if (droppedLimb == "leg") {
+				map.locationOf(zTarget).addItem(new ZombieLeg());
+				output += "\n" + zTarget + " dropped a leg!";
+				output += " Has " + zTarget.legs() + " leg(s) left.";
+			} else if (droppedLimb == "arm") {
+				map.locationOf(zTarget).addItem(new ZombieArm());
+				output += "\n" + zTarget + " dropped an arm!";
+				output += " Has " + zTarget.arms() + " arm(s) left.";
+				
+				// Handle dropping zombie's current weapon
+				if (zTarget.arms() == 1) {
+					// if the zombie dropped an arm and has 1 left:
+					// 50% chance to drop weapon
+					float c = rand.nextFloat();
+						if (c < 0.5) {
+							if (zTarget.getWeapon() instanceof WeaponItem) {
+								output += "\n" + zTarget + " dropped it's " + zTarget.getWeapon() + '!';
+								map.locationOf(zTarget).addItem((Item) zTarget.getWeapon());
+								zTarget.removeItemFromInventory((Item) zTarget.getWeapon());
+							}
+						}
+
+				} else {
+					// if the zombie dropped an arm and has 0 left:
+					// 100% chance to drop weapon
+					if (zTarget.getWeapon() instanceof WeaponItem) {
+						output += "\n" + zTarget + " dropped it's " + zTarget.getWeapon() + '!';
+						map.locationOf(zTarget).addItem((Item) zTarget.getWeapon());
+						zTarget.removeItemFromInventory((Item) zTarget.getWeapon());
+					}
+				}
+			}
+		}
+		return output;
+	}
+
+	protected String handleZombieAttack(Zombie zActor, GameMap map) {
+		Weapon weapon = zActor.getWeapon();
+		String output = "";
+		
+		boolean hit = calculateHit(zActor, weapon.verb());
+		if (hit) {
+			// deal damage and append to output
+			int damage = weapon.damage();
+			target.hurt(damage);
+			output += zActor + " " + weapon.verb() + " " + target + " for " + damage + " damage.";
+			// Heal on bite attack hit
+			if (weapon.verb() == "bites") {
+				zActor.heal(5);
+				output += "\n" + zActor + " heals 5 points from biting " + target;
+			}
+			// if target is a zombie, handle limb dropping
+			if (target.hasCapability(ZombieCapability.UNDEAD)) {
+				output += handleZombieLimb(map);
+			}
+		} else {
+			output += zActor + " misses " + target + ".";
+		}
+		return output;
+	}
+
+	protected String handleActorAttack(Actor actor, GameMap map) {
+		Weapon weapon = actor.getWeapon();
+		boolean hit = calculateHit(actor, weapon.verb());
+		String output = "";
+		
+		if (hit) {
+			// deal damage and append to output
+			int damage = weapon.damage();
+			target.hurt(damage);
+			output += actor + " " + weapon.verb() + " " + target + " for " + damage + " damage.";
+			// if target is a zombie, handle limb dropping
+			if (target.hasCapability(ZombieCapability.UNDEAD)) {
+				output += handleZombieLimb(map);
+			}
+		} else {
+			output += actor + " misses " + target + ".";
+		}
+
+		return output;
+	}
+
+	@Override
+	public String execute(Actor actor, GameMap map) {
+		String result = "";
+		
+		// if actor is a zombie, downcast actor to zombie and use handleZombieAttack() instead
+		if (actor.hasCapability(ZombieCapability.UNDEAD)) {
+			Zombie zActor = (Zombie) actor;
+			result += handleZombieAttack(zActor, map);
+		} else {
+			result += handleActorAttack(actor, map);
+		}
+
+		if (!target.isConscious()) {
+			Item corpse = new PortableItem("dead " + target, '%');
+			map.locationOf(target).addItem(corpse);
+			
+			Actions dropActions = new Actions();
+			for (Item item : target.getInventory())
+				dropActions.add(item.getDropAction());
+			for (Action drop : dropActions)		
+				drop.execute(target, map);
+			map.removeActor(target);	
+			
+			result += System.lineSeparator() + target + " is killed.";
+			return result;
+		}
+		return result;
 	}
 
 	@Override

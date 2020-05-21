@@ -18,7 +18,7 @@ public class ZombieArm extends WeaponItem {
 				this, WeaponStats.ZOMBIE_CLUB));
 		}
 		// Only tick when in Player inventory
-		if (actor.toString() == "Player") {
+		if (actor instanceof Player) {
 			ticksPassed += 1;
 		}
 	}

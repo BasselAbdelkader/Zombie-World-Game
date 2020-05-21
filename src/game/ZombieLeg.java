@@ -18,7 +18,7 @@ public class ZombieLeg extends WeaponItem {
 				this, WeaponStats.ZOMBIE_MACE));
 		}
 		// Only tick when in player inventory
-		if (actor.toString() == "Player") {
+		if (actor instanceof Player) {
 			ticksPassed += 1;
 		}
 	}

@@ -6,6 +6,13 @@ bite
 -lower hit chance than punch
 -heal 5 hp on hit
 
+
+PickUpBehaviour depends on:
+    Zombie
+    Location
+    Item
+    PickUpItemAction
+
 picks up weapon
 -at current location
 -chooses any weapon
@@ -27,4 +34,3 @@ zombie arm -> zombie club
 zombie leg -> mace
 
 player can craft zombie limb into better weapon
-

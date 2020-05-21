@@ -49,3 +49,27 @@ zombie has 10% chance to add another line to the return variable result, "\n bra
 **added pickupbehavior to be used by zombie**
 
 The required functionality can be implemented by modifying the existing Zombie class and the AttackAction class that it uses, so no need to create any new classes
+
+
+attackAction depends on:
+    Zombie
+    Location
+
+Zombie associated with:
+    PickUpBehaviour
+Zombie depends on:
+    Display
+    
+ZombieLeg/Arm subclass of WeaponItem
+ZombieLeg/Arm depends on:
+    WeaponStats
+    Actor
+
+CraftWeaponAction subclass of Action
+CraftWeaponAction depends on
+    Actor
+CraftWeaponAction associated with
+    WeaponItem
+    WeaponStats
+    
+CraftedWeapon subclass of Weaponitem

@@ -8,27 +8,10 @@ import edu.monash.fit2099.engine.WeaponItem;
 public class CraftWeaponAction extends Action {
 	protected WeaponItem original;
 	protected WeaponStats UpgradedWeapon;
-	// protected String craftedName;
-	// protected char craftedChar;
-	// protected int craftedDamage;
-	// protected String craftedVerb;
 
-	// public CraftWeaponAction(
-	// 	WeaponItem baseWeapon,
-	// 	String newName,
-	// 	char newChar,
-	// 	int newDamage,
-	// 	String newVerb) {
-		
-	// 	original = baseWeapon;
-	// 	craftedName = newName;
-	// 	craftedChar = newChar;
-	// 	craftedDamage = newDamage;
-	// 	craftedVerb = newVerb;
-	// }
-	public CraftWeaponAction(WeaponItem baseWeapon, WeaponStats CraftedWeapon) {
+	public CraftWeaponAction(WeaponItem baseWeapon, WeaponStats newWeapon) {
 		original = baseWeapon;
-		UpgradedWeapon = CraftedWeapon;
+		UpgradedWeapon = newWeapon;
 	}
 
 	@Override

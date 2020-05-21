@@ -5,10 +5,6 @@ import edu.monash.fit2099.engine.Location;
 import edu.monash.fit2099.engine.WeaponItem;
 
 public class ZombieLeg extends WeaponItem {
-	protected static String craftedName = "Zombie Mace";
-	protected static char craftedChar = 'M';
-	protected static int craftedDamage = 25;
-	protected static String craftedVerb = "smashes";
 	protected int ticksPassed = 0;
 	
 	public ZombieLeg() {
@@ -19,9 +15,12 @@ public class ZombieLeg extends WeaponItem {
 		// Player can only craft the leg 4 turns after picking it up.
 		if (ticksPassed == 4) {
 			allowableActions.add(new CraftWeaponAction(
-				this, craftedName, craftedChar, craftedDamage, craftedVerb));
+				this, WeaponStats.ZOMBIE_MACE));
 		}
-		ticksPassed += 1;
+		// Only tick when in player inventory
+		if (actor.toString() == "Player") {
+			ticksPassed += 1;
+		}
 	}
 	
 }

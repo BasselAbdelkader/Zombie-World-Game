@@ -5,10 +5,6 @@ import edu.monash.fit2099.engine.Location;
 import edu.monash.fit2099.engine.WeaponItem;
 
 public class ZombieArm extends WeaponItem {
-	protected static String craftedName = "Zombie Club";
-	protected static char craftedChar = 'C';
-	protected static int craftedDamage = 20;
-	protected static String craftedVerb = "clubs";
 	protected int ticksPassed = 0;
 	
 	public ZombieArm() {
@@ -19,8 +15,11 @@ public class ZombieArm extends WeaponItem {
 		// Player can only craft the arm 3 turns after picking it up.
 		if (ticksPassed == 3) {
 			allowableActions.add(new CraftWeaponAction(
-				this, craftedName, craftedChar, craftedDamage, craftedVerb));
+				this, WeaponStats.ZOMBIE_CLUB));
 		}
-		ticksPassed += 1;
+		// Only tick when in Player inventory
+		if (actor.toString() == "Player") {
+			ticksPassed += 1;
+		}
 	}
 }

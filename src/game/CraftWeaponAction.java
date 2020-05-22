@@ -26,7 +26,11 @@ public class CraftWeaponAction extends Action {
 		// If clause not really necessary since humans cant pickup items and zombies cant  
 		// craft them after picking it up
 		if (actor instanceof Player) {
+			// Remove the item from Player's inventory if it's there
 			actor.removeItemFromInventory(original);
+			// Remove item from the ground too, if player dropped the item
+			// after it became craftable. (prevent duplicate)
+			map.locationOf(actor).removeItem(original);
 			actor.addItemToInventory(new CraftedWeapon(
 				UpgradedWeapon.weaponName(),
 				UpgradedWeapon.weaponChar(),

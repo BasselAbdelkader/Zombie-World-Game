@@ -27,19 +27,42 @@ public class Zombie extends ZombieActor {
 	public Zombie(String name) {
 		super(name, 'Z', 100, ZombieCapability.UNDEAD);
 	}
-	
+	/**
+	 * Random number generator
+	 */
 	protected Random rand = new Random();
+	/**
+	 * Number of arms, starts with 2 and cannot lose more than that
+	 */
 	protected int arms = 2;
+	/**
+	 * Number of legs, starts with 2 and cannot lose more than that
+	 */
 	protected int legs = 2;
+	/**
+	 * true if zombie tried to move previous turn and did not.
+	 */
 	protected boolean skippedPrev = false;
 
+	/**
+	 * Getter for legs attribute
+	 * @return current number of legs the Zombie has
+	 */
 	public int legs() {
 		return legs;
 	}
+	/**
+	 * Getter for arms attribute
+	 * @return current number of arms the Zombie has
+	 */
 	public int arms() {
 		return arms;
 	}
-	// Returns string with name of which limb was removed or none if not possible
+	/**
+	 * Tries to remove a limb from the Zombie, returns result of the operation
+	 * @return String "leg" or "arm" if removed dropped an arm or leg, "none" if did \
+	not remove any limb.
+	 */
 	public String dropLimb() {
 		// Cases when we return early:
 		// no limbs left to drop, return "none"
@@ -73,10 +96,16 @@ public class Zombie extends ZombieActor {
 		}
 		return droppedLimb;
 	}
-
+	/**
+	 * Getter for skippedPrev attribute
+	 * @return true if Zombie did not move in the previous turn, false if it has
+	 */
 	public boolean hasSkipped() {
 		return skippedPrev;
 	}
+	/**
+	 * Toggles value of skippedPrev attribute
+	 */
 	public void toggleSkip() {
 		skippedPrev = !skippedPrev;
 	}
@@ -109,8 +138,10 @@ public class Zombie extends ZombieActor {
 	}
 
 	/**
-	 * If a Zombie can attack, it will.  If not, it will chase any human within 10 spaces.  
-	 * If no humans are close enough it will wander randomly.
+	 * If a Zombie can pick up a weapon at it's current location, it will.
+	 * If it has a weapon or none is foound, it will try to attack.
+	 * If no one is nearby, it will chase any human within 10 spaces.
+	 * if no human is found, it will wander randomly.
 	 * 
 	 * @param actions list of possible Actions
 	 * @param lastAction previous Action, if it was a multiturn action

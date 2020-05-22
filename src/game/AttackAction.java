@@ -9,6 +9,7 @@ import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.Item;
 import edu.monash.fit2099.engine.Weapon;
 import edu.monash.fit2099.engine.WeaponItem;
+import java.util.HashMap;
 
 /**
  * Special Action for attacking other Actors.
@@ -23,17 +24,34 @@ public class AttackAction extends Action {
 	 * Random number generator
 	 */
 	protected Random rand = new Random();
+	/**
+	 * HashMap storing verb of weapon used and corresponding hit chance for Zombie
+	 * when Zombie attacks with 2 arms
+	 */
+	protected HashMap<String, float> zombie2armhit = new HashMap<String, float>();
+	/**
+	 * HashMap storing verb of weapon used and corresponding hit chance for Zombie
+	 * when Zombie attacks with 1 arm
+	 */
+	protected HashMap<String, float> zombie1armhit = new HashMap<String, float>();
 
 	/**
 	 * Constructor.
-	 * 
+	 * Initializes hit chances of Zombie 1 arm and 2 arm intrinsic attacks.
 	 * @param target the Actor to attack
 	 */
 	public AttackAction(Actor target) {
 		this.target = target;
+		// initialize hit chances for zombie 2 arm attacks
+		zombie2armhit.put("punches", 0.8);
+		zombie2armhit.put("bites", 0.4);
+
+		// initialize hit chances for zombie 1 arm attacks
+		zombie1armhit.put("punches", 0.6);
+		zombie1armhit.put("bites", 0.8);
 	}
 
-	// Overloaded method: one for Zombie and one for Actor
+	// Overloaded method - one for Zombie and one for Actor
 	// Zombie attack hit chance calculation
 	protected boolean calculateHit(Zombie zActor, String weaponVerb) {
 		float chance = rand.nextFloat();
@@ -42,36 +60,30 @@ public class AttackAction extends Action {
 		boolean success = false;
 			// With 2 arms:
 		if (zActor.arms() == 2) {
-			// punches have 80% hit chance
-			if (weaponVerb == "punches") {
-				if (chance < 0.8) {
-					success = true;
-				}
-			} else if (weaponVerb == "bites") {
-			// bites have 40% hit chance
-				if (chance < 0.4) {
+			// this outer if can be omitted if hit chances for all weapon verbs are added 
+			// to HashMap.
+			// currently HashMap only contains hit chances for Zombie intrinsic weapons.
+			if (zombie2armhit.containsKey(weaponVerb)) {
+				if (chance < zombie2armhit.get(weaponVerb)) {
 					success = true;
 				}
 			} else {
-			// weapons have 90% hit chance
+				// weapons have 90% hit chance with 2 arms
 				if (chance < 0.9) {
 					success = true;
 				}
 			}
 		} else if (zActor.arms() == 1) {
 			// With 1 arm:
-			// punches have 60% hit chance
-			if (weaponVerb == "punches") {
-				if (chance < 0.6) {
-					success = true;
-				}
-			} else if (weaponVerb == "bites") {
-			// bites have 40% hit chance
-				if (chance < 0.4) {
+			// checking if containsKey can be omitted if hit chances for all weapon verbs are 
+			// added to HashMap.
+			// currently HashMap only contains hit chances for Zombie intrinsic weapons.
+			if (zombie1armhit.containsKey(weaponVerb)) {
+				if (chance < zombie1armhit.get(weaponVerb)) {
 					success = true;
 				}
 			} else {
-			// weapons have 45% hit chance
+				// weapons have 45% hit chance with 1 arm
 				if (chance < 0.45) {
 					success = true;
 				}
@@ -91,6 +103,7 @@ public class AttackAction extends Action {
 	
 	// Actor(except Zombie) attack hit chance calculation
 	protected boolean calculateHit(Actor actor, String weaponVerb) {
+		// Humans always have 90% hit chance with anything they attack with.
 		if (rand.nextFloat() < 0.9) {
 			return true;
 		}
@@ -99,8 +112,12 @@ public class AttackAction extends Action {
 
 	protected String handleZombieLimb(GameMap map) {
 		// target must be Zombie when this method is called
+		if (!(target instanceof Zombie)) {
+			throw new Exception("tried to drop limb from hitting non-Zombie target")
+		}
 		Zombie zTarget = (Zombie) target;
 		float chance = rand.nextFloat();
+		// String to be printed added to execute() method return and hence printed to Display
 		String output = "";
 		// 25% chance to drop a limb
 		if (chance < 0.25) {
@@ -141,10 +158,12 @@ public class AttackAction extends Action {
 		return output;
 	}
 
+	// Handle Zombie attack mechanics
 	protected String handleZombieAttack(Zombie zActor, GameMap map) {
 		Weapon weapon = zActor.getWeapon();
 		String output = "";
 		
+		// Calculates if the attack hit based on predefined hit chances
 		boolean hit = calculateHit(zActor, weapon.verb());
 		if (hit) {
 			// deal damage and append to output
@@ -156,7 +175,7 @@ public class AttackAction extends Action {
 				zActor.heal(5);
 				output += "\n" + zActor + " heals 5 points from biting " + target;
 			}
-			// if target is a zombie, handle limb dropping
+			// if target is a zombie, handle limb dropping mechanic
 			if (target.hasCapability(ZombieCapability.UNDEAD)) {
 				output += handleZombieLimb(map);
 			}
@@ -166,17 +185,19 @@ public class AttackAction extends Action {
 		return output;
 	}
 
+	// Handle non-Zombie actor attack mechanics
 	protected String handleActorAttack(Actor actor, GameMap map) {
 		Weapon weapon = actor.getWeapon();
-		boolean hit = calculateHit(actor, weapon.verb());
 		String output = "";
-		
+
+		// Calculates if the attack hit based on predefined hit chances
+		boolean hit = calculateHit(actor, weapon.verb());
 		if (hit) {
 			// deal damage and append to output
 			int damage = weapon.damage();
 			target.hurt(damage);
 			output += actor + " " + weapon.verb() + " " + target + " for " + damage + " damage.";
-			// if target is a zombie, handle limb dropping
+			// if target is a zombie, handle limb dropping mechanic
 			if (target.hasCapability(ZombieCapability.UNDEAD)) {
 				output += handleZombieLimb(map);
 			}

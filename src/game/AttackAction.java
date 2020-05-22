@@ -28,12 +28,20 @@ public class AttackAction extends Action {
 	 * HashMap storing verb of weapon used and corresponding hit chance for Zombie
 	 * when Zombie attacks with 2 arms
 	 */
-	protected HashMap<String, float> zombie2armhit = new HashMap<String, float>();
+	protected HashMap<String, Double> zombie2armhit = new HashMap<String, Double>();
 	/**
 	 * HashMap storing verb of weapon used and corresponding hit chance for Zombie
 	 * when Zombie attacks with 1 arm
 	 */
-	protected HashMap<String, float> zombie1armhit = new HashMap<String, float>();
+	protected HashMap<String, Double> zombie1armhit = new HashMap<String, Double>();
+
+	private final double ZOMBIE_2_ARM_PUNCH = 0.8;
+	private final double ZOMBIE_1_ARM_PUNCH = 0.6;
+	private final double ZOMBIE_LIMB_DROP = 0.25;
+	private final double ZOMBIE_WEAPON_DROP = 0.5;
+	private final double ZOMBIE_BITE = 0.4;
+	private final double GENERIC_2_ARM = 0.9;
+	private final double GENERIC_1_ARM = 0.45;
 
 	/**
 	 * Constructor.
@@ -43,18 +51,18 @@ public class AttackAction extends Action {
 	public AttackAction(Actor target) {
 		this.target = target;
 		// initialize hit chances for zombie 2 arm attacks
-		zombie2armhit.put("punches", 0.8);
-		zombie2armhit.put("bites", 0.4);
+		zombie2armhit.put("punches", ZOMBIE_2_ARM_PUNCH);
+		zombie2armhit.put("bites", ZOMBIE_BITE);
 
 		// initialize hit chances for zombie 1 arm attacks
-		zombie1armhit.put("punches", 0.6);
-		zombie1armhit.put("bites", 0.8);
+		zombie1armhit.put("punches", ZOMBIE_1_ARM_PUNCH);
+		zombie1armhit.put("bites", ZOMBIE_BITE);
 	}
 
 	// Overloaded method - one for Zombie and one for Actor
 	// Zombie attack hit chance calculation
 	protected boolean calculateHit(Zombie zActor, String weaponVerb) {
-		float chance = rand.nextFloat();
+		double chance = rand.nextDouble();
 
 		// success flag is true when hit is successful
 		boolean success = false;
@@ -63,13 +71,15 @@ public class AttackAction extends Action {
 			// this outer if can be omitted if hit chances for all weapon verbs are added 
 			// to HashMap.
 			// currently HashMap only contains hit chances for Zombie intrinsic weapons.
+			// Checks if chosen attack verb is in our hit chance table, use generic hit chance
+			// of 90% if it isn't.
 			if (zombie2armhit.containsKey(weaponVerb)) {
 				if (chance < zombie2armhit.get(weaponVerb)) {
 					success = true;
 				}
 			} else {
 				// weapons have 90% hit chance with 2 arms
-				if (chance < 0.9) {
+				if (chance < GENERIC_2_ARM) {
 					success = true;
 				}
 			}
@@ -78,13 +88,15 @@ public class AttackAction extends Action {
 			// checking if containsKey can be omitted if hit chances for all weapon verbs are 
 			// added to HashMap.
 			// currently HashMap only contains hit chances for Zombie intrinsic weapons.
+			// Checks if chosen attack verb is in our hit chance table, use generic hit chance
+			// of 45% if it isn't.
 			if (zombie1armhit.containsKey(weaponVerb)) {
 				if (chance < zombie1armhit.get(weaponVerb)) {
 					success = true;
 				}
 			} else {
 				// weapons have 45% hit chance with 1 arm
-				if (chance < 0.45) {
+				if (chance < GENERIC_1_ARM) {
 					success = true;
 				}
 			}
@@ -92,7 +104,7 @@ public class AttackAction extends Action {
 			// With 0 arms:
 			// bites have 40% hit chance
 			if (weaponVerb == "bites") {
-				if (chance < 0.4) {
+				if (chance < ZOMBIE_BITE) {
 					success = true;
 				}
 			}
@@ -104,23 +116,23 @@ public class AttackAction extends Action {
 	// Actor(except Zombie) attack hit chance calculation
 	protected boolean calculateHit(Actor actor, String weaponVerb) {
 		// Humans always have 90% hit chance with anything they attack with.
-		if (rand.nextFloat() < 0.9) {
+		if (rand.nextDouble() < GENERIC_2_ARM) {
 			return true;
 		}
 		return false;
 	}
 
-	protected String handleZombieLimb(GameMap map) {
+	protected String handleZombieLimb(GameMap map) throws Exception {
 		// target must be Zombie when this method is called
 		if (!(target instanceof Zombie)) {
-			throw new Exception("tried to drop limb from hitting non-Zombie target")
+			throw new Exception("tried to drop limb from hitting non-Zombie target");
 		}
 		Zombie zTarget = (Zombie) target;
 		float chance = rand.nextFloat();
 		// String to be printed added to execute() method return and hence printed to Display
 		String output = "";
 		// 25% chance to drop a limb
-		if (chance < 0.25) {
+		if (chance < ZOMBIE_LIMB_DROP) {
 			String droppedLimb = zTarget.dropLimb();
 			if (droppedLimb == "leg") {
 				map.locationOf(zTarget).addItem(new ZombieLeg());
@@ -136,7 +148,7 @@ public class AttackAction extends Action {
 					// if the zombie dropped an arm and has 1 left:
 					// 50% chance to drop weapon
 					float c = rand.nextFloat();
-						if (c < 0.5) {
+						if (c < ZOMBIE_WEAPON_DROP) {
 							if (zTarget.getWeapon() instanceof WeaponItem) {
 								output += "\n" + zTarget + " dropped it's " + zTarget.getWeapon() + '!';
 								map.locationOf(zTarget).addItem((Item) zTarget.getWeapon());
@@ -177,7 +189,12 @@ public class AttackAction extends Action {
 			}
 			// if target is a zombie, handle limb dropping mechanic
 			if (target.hasCapability(ZombieCapability.UNDEAD)) {
-				output += handleZombieLimb(map);
+				try {
+					output += handleZombieLimb(map);
+				} catch (Exception e) {
+					// ZombieCapability check failed
+					e.printStackTrace();
+				}
 			}
 		} else {
 			output += zActor + " misses " + target + ".";
@@ -199,7 +216,12 @@ public class AttackAction extends Action {
 			output += actor + " " + weapon.verb() + " " + target + " for " + damage + " damage.";
 			// if target is a zombie, handle limb dropping mechanic
 			if (target.hasCapability(ZombieCapability.UNDEAD)) {
-				output += handleZombieLimb(map);
+				try {
+					output += handleZombieLimb(map);
+				} catch (Exception e) {
+					// ZombieCapability check failed
+					e.printStackTrace();
+				}
 			}
 		} else {
 			output += actor + " misses " + target + ".";

@@ -112,7 +112,7 @@ public class Zombie extends ZombieActor {
 
 	@Override
 	public IntrinsicWeapon getIntrinsicWeapon() {
-		float chance = rand.nextFloat();
+		double chance = rand.nextDouble();
 		// initialize weapon
 		// default case: zombie punches
 		IntrinsicWeapon weapon = new IntrinsicWeapon(10, "punches");
@@ -120,13 +120,13 @@ public class Zombie extends ZombieActor {
 		// if zombie has 2 arms
 		// 50% chance for zombie to bite rather than punch
 		if (arms == 2) {
-			if (chance > 0.5) {
+			if (chance < 0.5) {
 				weapon = new IntrinsicWeapon(15, "bites");
 			}
 		} else if (arms == 1) {
 		// if zombie has 1 arm
 		// 75% chance for zombie to bite rather than punch
-			if (chance > 0.25) {
+			if (chance < 0.75) {
 				weapon = new IntrinsicWeapon(15, "bites");
 			}
 		} else {
@@ -151,7 +151,7 @@ public class Zombie extends ZombieActor {
 	@Override
 	public Action playTurn(Actions actions, Action lastAction, GameMap map, Display display) {
 		// 10% chance say braains each turn
-		float chance = rand.nextFloat();
+		double chance = rand.nextDouble();
 		if (chance < 0.1) {
 			display.println(this + " says: " + "Braaaaaaains");
 		}

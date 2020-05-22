@@ -5,10 +5,16 @@ import edu.monash.fit2099.engine.Actor;
 import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.WeaponItem;
 
+/**
+ * Action that enables conversion of one weapon into another
+ */
 public class CraftWeaponAction extends Action {
 	protected WeaponItem original;
 	protected WeaponStats UpgradedWeapon;
-
+	/**
+	 * Constructor, store reference to original WeaponItem and constant with fields containing
+	 * values of parameters used to instantiate a new CraftedWeapon 
+	 */
 	public CraftWeaponAction(WeaponItem baseWeapon, WeaponStats newWeapon) {
 		original = baseWeapon;
 		UpgradedWeapon = newWeapon;
@@ -17,7 +23,8 @@ public class CraftWeaponAction extends Action {
 	@Override
 	public String execute(Actor actor, GameMap map) {
 		// For player only
-		// not really necessary since humans cant pickup items and zombies cant craft them after picking up
+		// If clause not really necessary since humans cant pickup items and zombies cant  
+		// craft them after picking it up
 		if (actor instanceof Player) {
 			actor.removeItemFromInventory(original);
 			actor.addItemToInventory(new CraftedWeapon(

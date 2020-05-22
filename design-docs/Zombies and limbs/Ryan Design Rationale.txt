@@ -1,0 +1,44 @@
+Features(same as bolded titles in assignment spec):
+    Zombie attacks
+    
+Classes added/changed to implement:
+    Zombie
+    PickUpBehaviour
+    AttackAction
+    
+Implementation:
+    int attribute for arms and legs, getters provided for others classes to retrieve their values.
+    playTurn method modified have probability to say braains each turn
+    IntrinsicWeapon modified to have probability(vary depending on number of arms) to return bite attack.
+    AttackAction class modified to heal the Zombie on successful bite attack.
+    
+Features(same as bolded titles in assignment spec):
+    Beating up the Zombies
+    Crafting weapons
+    
+Classes added/changed to implement:
+    Zombie
+    PickUpBehaviour
+    HuntBehaviour
+    WanderBehaviour
+    AttackAction
+    ZombieLeg
+    ZombieArm
+    CraftWeaponAction
+    CraftedWeapon
+    WeaponStats
+    
+Implementation:
+    Zombie class given boolean attribute for moving every other turn when Zombie has 1 leg. HuntBehaviour and WanderBehaviour class modified to only allow Zombie to move when it didn't move the previous turn, when zombie has no legs it cannot move.
+    (HuntBehaviour and WanderBehaviour not included in UML diagram, since they already exist in the original system.
+    
+    In AttackAction class, execute method control flow now branches depending whether the attacking actor is a Zombie or non-Zombie actor. Because Zombies can heal when attacking and have varying hit chance depending on their number of arms. Splitting implementation to separate methods simplifies it. Both branches check if the target being attacked is a Zombie, if it is handle it's limb dropping.
+    
+    Store hit chances for different weapons in a HashMap, simplifies process of changing or adding new hit chance values for corresponding weapons.
+    
+    ZombieLeg and ZombieArm are weapons that can be picked up by any actor. If picked up by the Player, a CraftItemAction is added to their allowableActions attribute, Player can use this CraftItemAction to craft it into a better weapon by selecting it in their menu.
+    CraftItemAction will contain a reference to the original ZombieLeg/Arm and to a constant with fields in enum WeaponStats matching the corresponding upgraded version of the weapon. Getters for those fields will be used be CraftItemAction to retrieve data needed to instantiate a new CraftedWeapon with the data.
+    The enum class WeaponStats can be reused to add new weapons by adding new constants with fields containing values needed to instantiate a new CraftedWeapon.
+    WeaponStats allows all weapon related data to be stored in one place for convenient modification or adding.
+    
+    

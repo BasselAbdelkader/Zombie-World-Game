@@ -44,9 +44,9 @@ public class Zombie extends ZombieActor {
 	 */
 	protected boolean skippedPrev = false;
 	// Zombie punch damage
-	private final int BITE_DAMAGE = 15
+	private final int BITE_DAMAGE = 15;
 	// Zombie bite damage
-	private final int PUNCH_DAMAGE = 11
+	private final int PUNCH_DAMAGE = 10;
 
 	/**
 	 * Getter for legs attribute

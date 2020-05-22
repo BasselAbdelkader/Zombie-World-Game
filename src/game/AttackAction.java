@@ -239,6 +239,7 @@ public class AttackAction extends Action {
 			Zombie zActor = (Zombie) actor;
 			result += handleZombieAttack(zActor, map);
 		} else {
+		// else use handleActorAttack()
 			result += handleActorAttack(actor, map);
 		}
 

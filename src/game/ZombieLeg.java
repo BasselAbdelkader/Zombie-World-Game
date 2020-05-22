@@ -16,7 +16,7 @@ public class ZombieLeg extends WeaponItem {
 	private final int CRAFTABLE_TURNS = 4;
 
 	public ZombieLeg() {
-		super("Zombie Leg", 'l', 16, "slaps");
+		super("Zombie Leg", 'l', 16, "whips");
 	}
 	
 	/**

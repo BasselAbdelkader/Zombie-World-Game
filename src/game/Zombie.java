@@ -43,6 +43,10 @@ public class Zombie extends ZombieActor {
 	 * true if zombie tried to move previous turn and did not.
 	 */
 	protected boolean skippedPrev = false;
+	// Zombie punch damage
+	private final int BITE_DAMAGE = 15
+	// Zombie bite damage
+	private final int PUNCH_DAMAGE = 11
 
 	/**
 	 * Getter for legs attribute
@@ -115,23 +119,23 @@ public class Zombie extends ZombieActor {
 		double chance = rand.nextDouble();
 		// initialize weapon
 		// default case: zombie punches
-		IntrinsicWeapon weapon = new IntrinsicWeapon(10, "punches");
+		IntrinsicWeapon weapon = new IntrinsicWeapon(PUNCH_DAMAGE, "punches");
 
 		// if zombie has 2 arms
 		// 50% chance for zombie to bite rather than punch
 		if (arms == 2) {
 			if (chance < 0.5) {
-				weapon = new IntrinsicWeapon(15, "bites");
+				weapon = new IntrinsicWeapon(BITE_DAMAGE, "bites");
 			}
 		} else if (arms == 1) {
 		// if zombie has 1 arm
 		// 75% chance for zombie to bite rather than punch
 			if (chance < 0.75) {
-				weapon = new IntrinsicWeapon(15, "bites");
+				weapon = new IntrinsicWeapon(BITE_DAMAGE, "bites");
 			}
 		} else {
 		// if zombie has 0 arms, 100% chance to bite
-			weapon = new IntrinsicWeapon(15, "bites");
+			weapon = new IntrinsicWeapon(BITE_DAMAGE, "bites");
 		}
 
 		return weapon;

@@ -1,16 +1,9 @@
 package game;
-
-public class Food {
-    public void harvest(){
-
-    }
-    public void eatFood(){
-
-    }
-    public void dropeFoodOnGround(){
-
-    }
-    public void placeInPlayerInventory(){
-
+import java.util.list;
+public class Food extends PortableItem {
+    // new portable item with the name food
+    public Food (){
+        super("Food",'$');
+        super.allowableActions.add(new EatFoodAction());
     }
 }

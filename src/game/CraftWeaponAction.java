@@ -14,6 +14,8 @@ public class CraftWeaponAction extends Action {
 	/**
 	 * Constructor, store reference to original WeaponItem and constant with fields containing
 	 * values of parameters used to instantiate a new CraftedWeapon 
+	 * @param baseWeapon Weapon to be crafted into another Weapon
+	 * @param newWeapon Parameters used to craft the upgraded Weapon
 	 */
 	public CraftWeaponAction(WeaponItem baseWeapon, WeaponStats newWeapon) {
 		original = baseWeapon;

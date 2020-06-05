@@ -18,9 +18,52 @@ public class Application {
 	public static void main(String[] args) {
 		World world = new World(new Display());
 
-		FancyGroundFactory groundFactory = new FancyGroundFactory(new Dirt(), new Fence(), new Tree());
-		
-		List<String> map = Arrays.asList(
+		// Initialize Town Map
+		FancyGroundFactory townGroundFactory = new FancyGroundFactory(new Garage(), new Dirt(), new Tree());
+		List<String> townMapList = Arrays.asList(
+		"................................................................................",
+		"................................................................................",
+		"................................................................................",
+		"................................................................................",
+		"............++..................................................................",
+		"..............++++..............................................................",
+		".............+++...+++..........................................................",
+		"................................................................................",
+		"................................................................................",
+		"................................................................................",
+		"................................................................................",
+		"................................................................................",
+		"................................................................................",
+		"..........................................^.....................................",
+		"............+++.................................................................",
+		".............+++++..............................................................",
+		"...............++........................................+++++..................",
+		".............+++....................................++++++++....................",
+		"............+++.......................................+++.......................",
+		"................................................................................",
+		".........................................................................++.....",
+		"........................................................................++.++...",
+		".........................................................................++++...",
+		"..........................................................................++....",
+		"................................................................................");
+
+		GameMap townMap = new GameMap(townGroundFactory, townMapList);
+		world.addGameMap(townMap);
+
+		String[] townhumans = {"Winter", "Clem", "Jacob", "Jaquelyn"};
+		 int x, y;
+		for (String name : townhumans) {
+			do {
+				x = (int) Math.floor(Math.random() * 20.0 + 30.0);
+				y = (int) Math.floor(Math.random() * 7.0 + 5.0);
+			} 
+			while (townMap.at(x, y).containsAnActor());
+			townMap.at(x,  y).addActor(new Human(name));	
+		}
+
+		// Initialize Forest Map(Player starts on this map)
+		FancyGroundFactory forestGroundFactory = new FancyGroundFactory(new Garage(), new Dirt(), new Fence(), new Tree());
+		List<String> forestMapList = Arrays.asList(
 		"................................................................................",
 		"................................................................................",
 		"....................................##########..................................",
@@ -34,7 +77,7 @@ public class Application {
 		".........................#...............................##.....................",
 		".........................###..............................##....................",
 		"...........................####......................######.....................",
-		"..............................#########.........####............................",
+		"..............................#########...^.....####............................",
 		"............+++.......................#.........#...............................",
 		".............+++++....................#.........#...............................",
 		"...............++........................................+++++..................",
@@ -46,38 +89,46 @@ public class Application {
 		".........................................................................++++...",
 		"..........................................................................++....",
 		"................................................................................");
-		GameMap gameMap = new GameMap(groundFactory, map );
-		world.addGameMap(gameMap);
+		GameMap forestMap = new GameMap(forestGroundFactory, forestMapList);
+		world.addGameMap(forestMap);
 		
 		Actor player = new Player("Player", '@', 300);
-		world.addPlayer(player, gameMap.at(42, 15));
+		world.addPlayer(player, forestMap.at(42, 15));
 		
 	    // Place some random humans
 		String[] humans = {"Carlton", "May", "Vicente", "Andrea", "Wendy",
 				"Elina", "Winter", "Clem", "Jacob", "Jaquelyn"};
-		int x, y;
+//		int x, y;
 		for (String name : humans) {
 			do {
 				x = (int) Math.floor(Math.random() * 20.0 + 30.0);
 				y = (int) Math.floor(Math.random() * 7.0 + 5.0);
 			} 
-			while (gameMap.at(x, y).containsAnActor());
-			gameMap.at(x,  y).addActor(new Human(name));	
+			while (forestMap.at(x, y).containsAnActor());
+			forestMap.at(x,  y).addActor(new Human(name));	
 		}
 		
 		// place a simple weapon
-		gameMap.at(74, 20).addItem(new Plank());
-		gameMap.at(42, 16).addItem(new Plank());
-//		gameMap.at(42, 17).addItem(new Plank());
-//		gameMap.at(42, 17).addItem(new PortableItem("shaft", 'S'));
+		forestMap.at(74, 20).addItem(new Plank());
+		forestMap.at(42, 16).addItem(new Plank());
+//		forestMap.at(42, 17).addItem(new Plank());
+//		forestMap.at(42, 17).addItem(new PortableItem("shaft", 'S'));
 		
 		// FIXME: Add more zombies!
-		gameMap.at(30, 20).addActor(new Zombie("Groan"));
-		gameMap.at(30,  18).addActor(new Zombie("Boo"));
-		gameMap.at(10,  4).addActor(new Zombie("Uuuurgh"));
-		gameMap.at(42, 18).addActor(new Zombie("Mortalis"));
-		gameMap.at(1, 10).addActor(new Zombie("Gaaaah"));
-		gameMap.at(42, 24).addActor(new Zombie("Aaargh"));	
+		forestMap.at(30, 20).addActor(new Zombie("Groan"));
+		forestMap.at(30,  18).addActor(new Zombie("Boo"));
+		forestMap.at(10,  4).addActor(new Zombie("Uuuurgh"));
+		forestMap.at(42, 18).addActor(new Zombie("Mortalis"));
+		forestMap.at(1, 10).addActor(new Zombie("Gaaaah"));
+		forestMap.at(42, 24).addActor(new Zombie("Aaargh"));
+
+		//Test move player to new map
+		// gameMap.moveActor(player, townMap.at(42, 15));
+
+		// Add car to each Map
+		forestMap.at(42, 13).addItem(new Vehicle(townMap.at(42, 13), "Town map"));
+		townMap.at(42, 13).addItem(new Vehicle(forestMap.at(42, 13), "Forest map"));
+
 		world.run();
 	}
 }

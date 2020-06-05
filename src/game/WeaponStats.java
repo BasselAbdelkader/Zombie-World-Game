@@ -21,25 +21,25 @@ public enum WeaponStats {
 		weaponVerb = newVerb;
 	}
 	/**
-	 * Get name of current weapon
+	 * @return name of current weapon
 	 */
 	public String weaponName() {
 		return weaponName;
 	}
 	/**
-	 * Get char of current weapon
+	 * @return char of current weapon
 	 */
 	public char weaponChar() {
 		return weaponChar;
 	}
 	/**
-	 * Get damage of current weapon
+	 * @return damage of current weapon
 	 */
 	public int weaponDamage() {
 		return weaponDamage;
 	}
 	/**
-	 * Get verb of current weapon
+	 * @return verb of current weapon
 	 */
 	public String weaponVerb() {
 		return weaponVerb;

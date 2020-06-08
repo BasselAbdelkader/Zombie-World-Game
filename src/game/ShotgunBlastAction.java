@@ -13,7 +13,20 @@ import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.Location;
 import edu.monash.fit2099.engine.Menu;
 
+/**
+ * Handles setup and firing the Shotgun
+ */
 public class ShotgunBlastAction extends Action {
+	protected RangedWeapon parentItem;
+	
+	/**
+	 * Constructor, stores reference to parent item for updating it's ammo
+	 * @param item Parent item
+	 */
+	public ShotgunBlastAction(RangedWeapon item) {
+		parentItem = item;
+	}
+	
 	/**
 	 * Get list of locations connected to current 90 degress in given direction.
 	 * (eg. if direction = North, returns = North-West, North, NorthEast)
@@ -73,20 +86,24 @@ public class ShotgunBlastAction extends Action {
 		return visited;
 	}
 	
+	/**
+	 * Asks player which direction fire in, then fires in chosen direction and returns damage log of actors affected
+	 */
 	@Override
 	public String execute(Actor actor, GameMap map) {
 		// Only player can fire shotgun
 		if (!(actor instanceof Player)) {
 			return null;
 		}
+		
 		Menu menu = ((Player) actor).menu();
 		Display display = ((Player) actor).display();
+		
 		// Notify Player firing shotgun process has begin
 		display.println(actor + " loads their shotgun");
 
-		// Ask player which direction to fire in
 		Actions options = new Actions();
-		// possible directions
+		// Get possible directions to fire in
 		// Requires exit.name() to be a cardinal direction, NOT the name of a place
 		for (Exit exit : map.locationOf(actor).getExits()) {
 			try {
@@ -95,6 +112,7 @@ public class ShotgunBlastAction extends Action {
 				e.printStackTrace();
 			}
 		}
+		// Ask player which direction to fire in
 		ShotgunTargetAction chosenDirection = (ShotgunTargetAction) menu.showMenu(actor, options, display);
 		// Notify Player of direction chosen
 		display.println(chosenDirection.execute(actor, map));
@@ -110,16 +128,37 @@ public class ShotgunBlastAction extends Action {
 				actorsInRange.add(here.getActor());
 			}
 		}
-		// calc hit chance
-		// damage them
-		// Return result of firing shotgun in chosen direction (everyone who was damaged)
-		// TEMP RETURN
-		return actor + " blasts their Shotgun " + direction;
+		
+		// Set this so AttackAction uses this weapon's damage and hit chances
+		((Player) actor).setActiveWeapon(parentItem);
+		
+		String victimLog = "";
+		String completeLog = "";
+		boolean hitSomeone = false;
+		for (Actor victim : actorsInRange) {
+			// Damage the actor
+			hitSomeone = true;
+			victimLog = new AttackAction(victim).execute(actor, map);
+			completeLog += victimLog + "\n";
+		}
+		if (hitSomeone) {
+			completeLog += actor + " blasted at " + actorsInRange.size() + " target(s)";
+		} else {
+			completeLog += actor + " blasted at nobody";
+		}
+		
+		// Decrement this weapon's ammo
+		parentItem.decreaseAmmo(1);
+		
+		// Reset this to allow Player to use melee weapons in future turns
+		((Player) actor).resetActiveWeapon();
+		
+		return completeLog;
 	}
 
 	@Override
 	public String menuDescription(Actor actor) {
-		return "Setup Shotgun";
+		return "Setup and Fire Shotgun";
 	}
 
 }

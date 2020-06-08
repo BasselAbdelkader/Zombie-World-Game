@@ -25,7 +25,7 @@ public class TravelAction extends Action {
 	@Override
 	public String execute(Actor actor, GameMap map) {
 		map.moveActor(actor, destinationLocation);
-		return actor + " traveled to" + destinationName;
+		return actor + " traveled to " + destinationName;
 	}
 	
 	@Override

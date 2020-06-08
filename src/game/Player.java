@@ -1,17 +1,11 @@
 package game;
 
-import java.util.List;
-
 import edu.monash.fit2099.engine.Action;
 import edu.monash.fit2099.engine.Actions;
 import edu.monash.fit2099.engine.Display;
-import edu.monash.fit2099.engine.Exit;
 import edu.monash.fit2099.engine.GameMap;
-import edu.monash.fit2099.engine.Location;
 import edu.monash.fit2099.engine.Menu;
-
-import java.util.ArrayList;
-import java.util.HashSet;
+import edu.monash.fit2099.engine.Weapon;
 
 /**
  * Class representing the Player.
@@ -19,6 +13,7 @@ import java.util.HashSet;
 public class Player extends Human {
 	private Display gameDisplay;
 	private boolean allowDisplayAccess = false;
+	private Weapon activeWeapon;
 
 	private Menu menu = new Menu();
 
@@ -47,8 +42,27 @@ public class Player extends Human {
 	public Menu menu() {
 		return menu;
 	}
-
 	
+	public void setActiveWeapon(RangedWeapon weapon) {
+		if (weapon != null) {
+			activeWeapon = weapon;			
+		}
+	}
+	
+	public void resetActiveWeapon() {
+		activeWeapon = null;
+	}
+	
+	/**
+	 * Return the ranged weapon that was used to Attack. If a ranged weapon wasn't used, use original Actor getWeapon()
+	 */
+	@Override
+	public Weapon getWeapon() {
+		if (activeWeapon != null) {
+			return activeWeapon;
+		}
+		return super.getWeapon();
+	}
 
 	@Override
 	public Action playTurn(Actions actions, Action lastAction, GameMap map, Display display) {

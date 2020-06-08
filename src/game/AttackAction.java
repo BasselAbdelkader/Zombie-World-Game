@@ -59,7 +59,7 @@ public class AttackAction extends Action {
 		zombie1armhit.put("bites", ZOMBIE_BITE);
 	}
 
-	// Overloaded method - one for Zombie and one for Actor
+	// Overloaded method - one for Zombie, one for Actor using melee weapon, one for Actor using ranged weapon
 	// Zombie attack hit chance calculation
 	protected boolean calculateHit(Zombie zActor, String weaponVerb) {
 		double chance = rand.nextDouble();
@@ -113,10 +113,19 @@ public class AttackAction extends Action {
 		return success;
 	}
 	
-	// Actor(except Zombie) attack hit chance calculation
+	// Actor melee attack hit chance calculation
 	protected boolean calculateHit(Actor actor, String weaponVerb) {
-		// Humans always have 90% hit chance with anything they attack with.
+		// Humans always have 90% hit chance with any melee weapon.
 		if (rand.nextDouble() < GENERIC_2_ARM) {
+			return true;
+		}
+		return false;
+	}
+	
+	// Actor ranged attack hit chance calculation
+	// Added to allow this class to be used for RangedWeapon attacks
+	protected boolean calculateHit(Actor actor, String weaponVerb, double hitChance) {
+		if (rand.nextDouble() < hitChance) {
 			return true;
 		}
 		return false;
@@ -208,7 +217,16 @@ public class AttackAction extends Action {
 		String output = "";
 
 		// Calculates if the attack hit based on predefined hit chances
-		boolean hit = calculateHit(actor, weapon.verb());
+		boolean hit = false;
+		// Separate cases for ranged and melee weapons
+		if (weapon instanceof RangedWeapon) {
+			// Ranged weapons store hit chance inside themselves
+			RangedWeapon w = (RangedWeapon) weapon;
+			hit = calculateHit(actor, w.verb(), w.hitChance());
+		} else {
+			// Melee weapons hit chance stored locally
+			hit = calculateHit(actor, weapon.verb());			
+		}
 		if (hit) {
 			// deal damage and append to output
 			int damage = weapon.damage();

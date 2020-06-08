@@ -8,6 +8,9 @@ import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.Location;
 import edu.monash.fit2099.engine.Menu;
 
+/**
+ * Initial Action present on Sniper Rifle, implements starting the sniping process
+ */
 public class SniperSetupAction extends Action implements SniperAction {
 	private SniperRifle parentItem;
 	/**
@@ -17,6 +20,7 @@ public class SniperSetupAction extends Action implements SniperAction {
 		parentItem = item;
 	}
 	
+	// Returns Actions containing one SniperTargetAction for every Zombie on the given map
 	private Actions acquireTargets(GameMap map) {
 		Actions targets = new Actions();
  		for (int x : map.getXRange()) {
@@ -37,6 +41,9 @@ public class SniperSetupAction extends Action implements SniperAction {
  		return targets;
 	}
 	
+	/**
+	 * Asks player to choose target, then asks player whether to fire immediately or aim for one turn
+	 */
 	@Override
 	public String execute(Actor actor, GameMap map) {
 		// Only the Player can fire the Sniper Rifle
@@ -52,16 +59,26 @@ public class SniperSetupAction extends Action implements SniperAction {
 		display.println(actor + " loads their Sniper Rifle");
 		
  		Actions targets = acquireTargets(map);
- 		SniperTargetAction chosenTarget = (SniperTargetAction) menu.showMenu(player, targets, display);
+ 		SniperTargetAction chosenTarget;
+ 		if (targets.size() > 1) {
+ 			// Ask player which Zombie to target
+ 			chosenTarget = (SniperTargetAction) menu.showMenu(player, targets, display); 			
+ 		} else {
+ 			// Return early/skip turn if no targets on the map
+ 			return actor + " looked through their scope and found no Zombies, sniping aborted";
+ 		}
  		parentItem.setTarget(chosenTarget.getTarget());
- 		// Indicate which target was chosen
+ 		
+ 		// Notify player of which target was chosen
  		display.println(chosenTarget.execute(player, map));
  		
+ 		// Generate options: Fire immediately or aim for one turn
  		Actions snipingActions = new Actions();
  		// Fire immediately, 0 turns spent aiming
  		snipingActions.add(new SniperFireAction(parentItem));
  		// Spend current turn aiming
  		snipingActions.add(new SniperAimAction(parentItem));
+ 		// Ask player which option to take
 		Action chosenAction = menu.showMenu(player, snipingActions, display);
 		
 		// If player chose to aim, store player's current hp for concentration check
@@ -69,13 +86,14 @@ public class SniperSetupAction extends Action implements SniperAction {
 			parentItem.setStartHp(player.hp());
 		}
 		
+		// Clear existing actions in the item, execute the chosen action
 		parentItem.clearActions();
 		try {
 			parentItem.addSniperAction(chosenAction);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		// Return result of executing chosen action
 		return chosenAction.execute(actor, map);
 	}
 
@@ -85,7 +103,7 @@ public class SniperSetupAction extends Action implements SniperAction {
 	}
 
 	/**
-	 * This method is unused for this class, only here for consistency
+	 * This method is not used in this class, only here for consistency
 	 */
 	@Override
 	public int tickStarted() {

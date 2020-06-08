@@ -93,7 +93,7 @@ public class Application {
 		world.addGameMap(forestMap);
 		
 		Actor player = new Player("Player", '@', 300);
-//		world.addPlayer(player, forestMap.at(42, 15));
+		world.addPlayer(player, forestMap.at(42, 15));
 		
 	    // Place some random humans
 		String[] humans = {"Carlton", "May", "Vicente", "Andrea", "Wendy",
@@ -111,12 +111,6 @@ public class Application {
 		// place a simple weapon
 		forestMap.at(74, 20).addItem(new Plank());
 		forestMap.at(42, 16).addItem(new Plank());
-//		forestMap.at(42, 17).addItem(new Plank());
-//		forestMap.at(42, 17).addItem(new PortableItem("shaft", 'S'));
-		// place Sniper Rifle
-		forestMap.at(41, 15).addItem(new SniperRifle());
-		forestMap.at(41, 16).addItem(new SniperRifle());
-		forestMap.at(38, 12).addItem(new SniperRifle());
 		
 		// FIXME: Add more zombies!
 		forestMap.at(30, 20).addActor(new Zombie("Groan"));
@@ -126,12 +120,17 @@ public class Application {
 		forestMap.at(1, 24).addActor(new Zombie("Gaaaah"));
 		forestMap.at(42, 24).addActor(new Zombie("Aaargh"));
 		
-		// Shotgun range test
-		world.addPlayer(player, forestMap.at(8, 10));
-		forestMap.at(8,10).addItem(new Shotgun());
-
-		//Test move player to new map
-		// gameMap.moveActor(player, townMap.at(42, 15));
+		// Shotgun/sniper test
+		townMap.at(42, 22).addActor(new Zombie("Mortalis"));
+		townMap.at(42, 23).addActor(new Zombie("Gaaaah"));
+		townMap.at(42, 24).addActor(new Zombie("Aaargh"));
+		townMap.at(42,14).addItem(new Shotgun());
+		townMap.at(42, 12).addItem(new AmmoBox(new Shotgun(), 10));
+		townMap.at(42, 11).addItem(new AmmoBox(new Shotgun(), 50));
+		
+		townMap.at(43,14).addItem(new SniperRifle());
+		townMap.at(43, 12).addItem(new AmmoBox(new SniperRifle(), 5));
+		townMap.at(43, 11).addItem(new AmmoBox(new SniperRifle(), 50));
 
 		// Add car to each Map
 		forestMap.at(42, 13).addItem(new Vehicle(townMap.at(42, 13), "Town map"));

@@ -1,0 +1,18 @@
+
+The experience of working with this engine.
+
+The game engine used in the task is not very easy to use, but in the end I was able to understand how it works.
+Most of the engine is fairly easy to understand, although some parts are difficult.  Especially classes as ActorLocations with hash maps <Location, Actor> and <Actor, Location>.
+	The class ActorLocations is used in the GameMap class. I spent a lot of time trying to figure out how the “actorLocations” attribute is initialized. There is no initialization in the constructor and there is no setter for this attribute. I finally discovered that it is initialized using the usual assignment in the World class:
+gameMap.actorLocations = actorLocations;
+The Game Engine package should be used as an external library without making any changes to its code. Only public methods must be used. When creating a new game using this game engine, the developer should not make any changes to the engine. But when making the assignment I couldn't follow this rule.
+When I was doing the third task I couldn't find a way to avoid changing the game engine.
+For example, I needed to add the quit option in the menu. To implement this, I had to create a new action: “QuitAction” and manually add it to the player options in the “processActorTurn” method. 
+To finish the game, I discovered that the easiest way was to kill the player. I think there must be the quit option as a part of the engine.
+The second problem I encountered was the game ending due to a condition. For example, when all the humans are killed or all the zombies are vanished. And again, I had to make changes in the World class, in the “stillRunning” method.
+The should be the possibility of defining conditions for the game win or game loss somewhere in the game engine.
+The third problem was the days counting. Adding the voodoo, Mambo Marie I needed to know the current day. Voodoo behaviour depends on the time, so it would be comfortable to have the possibility to know the number of the day.
+The fourth problem was the presence of an actor who is not on the map now. Voodoo lives off the map and appears at a random moment. 
+The game engine doesn’t maintain this feature because each actor must be somewhere on the map.
+Despite all of the above, the game engine offers vast possibilities for creating games of various kinds.
+Working with it gave me a lot of experience in game development. I knew many new ways to write professional code.

@@ -9,7 +9,7 @@ public enum WeaponStats {
 	ZOMBIE_CLUB("Zombie Club", 'C', 20, "clubs"),
 	ZOMBIE_MACE("Zombie Mace", 'M', 25, "smashes"),
 	SNIPER_RIFLE("Sniper Rifle", '*', 40, "snipes"),
-	SHOTGUN("Shotgun", 'V', 34, "blasts");
+	SHOTGUN("Shotgun", '&', 34, "blasts");
 	
 	private final String weaponName;
 	private final char weaponChar;

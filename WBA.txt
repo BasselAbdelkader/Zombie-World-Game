@@ -14,6 +14,7 @@ Going to Town - Ryan Chow
 New weapons: shotgun and sniper rifle - Ryan Chow
 Mambo Marie - Bassel Abdelkader
 Ending the Game - Bassel Abdelkader
+Game engine recommendations - Each of us will write about the parts of the game engine we are most familiar with
 
 Complete each assigned task by the agreed upon deadline.
 

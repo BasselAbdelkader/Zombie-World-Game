@@ -13,6 +13,8 @@ import edu.monash.fit2099.engine.Weapon;
 public class Player extends Human {
 	private Display gameDisplay;
 	private boolean allowDisplayAccess = false;
+	
+	// If activeWeapon is not null, activeWeapon is used by Player to attack
 	private Weapon activeWeapon;
 
 	private Menu menu = new Menu();
@@ -27,11 +29,17 @@ public class Player extends Human {
 	public Player(String name, char displayChar, int hitPoints) {
 		super(name, displayChar, hitPoints);
 	}
-
+	
+	/**
+	 * @return Return Player's current Hp
+	 */
 	public int hp() {
 		return hitPoints;
 	}
 	
+	/**
+	 * @return Display object
+	 */
 	public Display display() {
 		if (allowDisplayAccess) {
 			return gameDisplay;
@@ -39,22 +47,32 @@ public class Player extends Human {
 		return null;
 	}
 	
+	/**
+	 * @return Return menu object
+	 */
 	public Menu menu() {
 		return menu;
 	}
 	
+	/**
+	 * Sets the Player's active weapon, if set will be prioritized by getWeapon()
+	 * @param weapon
+	 */
 	public void setActiveWeapon(RangedWeapon weapon) {
 		if (weapon != null) {
 			activeWeapon = weapon;			
 		}
 	}
 	
+	/**
+	 * Resets Player's activeWeapon to null
+	 */
 	public void resetActiveWeapon() {
 		activeWeapon = null;
 	}
 	
 	/**
-	 * Return the ranged weapon that was used to Attack. If a ranged weapon wasn't used, use original Actor getWeapon()
+	 * Return the weapon that should be used to Attack. If activeWeapon has not been set, use original Actor getWeapon()
 	 */
 	@Override
 	public Weapon getWeapon() {
@@ -66,12 +84,10 @@ public class Player extends Human {
 
 	@Override
 	public Action playTurn(Actions actions, Action lastAction, GameMap map, Display display) {
+		// Expose game display to be used by RangedWeapons to print information
 		gameDisplay = display;
 		allowDisplayAccess = true;
 
-		// if (lastAction.getNextAction() != null) {
-		// 	return lastAction.getNextAction();			
-		// }
 		Action chosenAction = menu.showMenu(this, actions, display);
 		
 

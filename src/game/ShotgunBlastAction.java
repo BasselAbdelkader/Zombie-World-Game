@@ -16,7 +16,7 @@ import edu.monash.fit2099.engine.Menu;
 /**
  * Handles setup and firing the Shotgun
  */
-public class ShotgunBlastAction extends Action {
+public class ShotgunBlastAction extends Action implements ShotgunAction {
 	protected RangedWeapon parentItem;
 	
 	/**

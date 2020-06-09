@@ -1,0 +1,8 @@
+New classes: Garage, Vehicle
+
+Garage is a new subclass of Ground, it is impassable to actors other than the Player so it cannot be blocked.
+Vehicle is a new subclass of Item, it cannot be picked up and is added to the location of Garage, with an allowable action TravelAction.
+
+Thus when the Player enters the Garage location, they are given the option to use execute the TravelAction which moves them to another map - Town map.
+
+I think this implementation is simple to understand and extensible to include more features such as fuel or other conditional travel functions.

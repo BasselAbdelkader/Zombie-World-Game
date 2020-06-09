@@ -1,0 +1,4 @@
+RangedWeapon(abstract) extends WeaponItem
+Shotgun extends RangedWeapon
+SniperRifle extends RangedWepaon
+

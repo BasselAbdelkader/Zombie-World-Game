@@ -6,6 +6,7 @@ import edu.monash.fit2099.engine.Display;
 import edu.monash.fit2099.engine.GameMap;
 import edu.monash.fit2099.engine.Menu;
 import edu.monash.fit2099.engine.Weapon;
+import edu.monash.fit2099.engine.*;
 
 /**
  * Class representing the Player.
@@ -87,10 +88,91 @@ public class Player extends Human {
 		// Expose game display to be used by RangedWeapons to print information
 		gameDisplay = display;
 		allowDisplayAccess = true;
+		  ///added part ---
+        if (checkWin(map)) {
+            map.removeActor(this);
+            return new WinAction();
+        }
+        if (checkLoss(map)) {
+            map.removeActor(this);
+            return new LossAction();
+        }
+        createVoodoo(map);
+        ///added part ---
+          actions.add(new QuitAction());
+		if (lastAction.getNextAction() != null)
+			return lastAction.getNextAction();
+		return menu.showMenu(this, actions, display);
 
 		Action chosenAction = menu.showMenu(this, actions, display);
 		
 
 		return chosenAction;
 	}
+	private boolean checkWin(GameMap map) {
+        int zombies = 0;
+        for (int x: map.getXRange()) {
+            for (int y : map.getYRange()) {
+                Actor actor = map.at(x, y).getActor();
+                if (actor != null) {
+                    if (actor instanceof Zombie || actor instanceof Voodoo) {
+                        zombies++;
+                    }
+                }
+            }
+        }
+        return zombies == 0;
+    }
+    private boolean checkLoss(GameMap map) {
+        int humans = 0;
+        for (int x: map.getXRange()) {
+            for (int y : map.getYRange()) {
+                Actor actor = map.at(x, y).getActor();
+                if (actor != null) {
+                    if (actor instanceof Human) {
+                        humans++;
+                    }
+                }
+            }
+        }
+        return humans <= 1;  //must exist player and at least one human more
+    }
+     private Voodoo voodoo;
+
+    private void createVoodoo(GameMap map) {
+        if (voodoo != null && voodoo.isKilled()) return;
+
+        for (int x: map.getXRange()) {
+            for (int y : map.getYRange()) {
+                Actor actor = map.at(x, y).getActor();
+                if (actor instanceof Voodoo) {
+                    return; //Voodoo exists on the map
+                }
+            }
+        }
+
+        ///voodoo not killed and does not exist on the map
+        double prob = Math.random();
+        if (prob < 0.05) { //5% probability
+            //put Voodoo Somewhere at the edge
+            for (int x: map.getXRange()) {
+                if (!map.at(x, 0).containsAnActor()) {
+                    System.out.println("Voodoo created!");
+                    voodoo = new Voodoo("Mambo Marie");
+                    map.at(x, 0).addActor(voodoo);
+                    return;
+                }
+            }
+            for (int y : map.getYRange()) {
+                if (!map.at(0, y).containsAnActor()) {
+                    System.out.println("Voodoo created!");
+                    voodoo = new Voodoo("Mambo Marie");
+                    map.at(0, y).addActor(voodoo);
+                    return;
+                }
+            }
+        }
+    }
+    
+	
 }

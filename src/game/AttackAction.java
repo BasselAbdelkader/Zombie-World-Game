@@ -275,6 +275,10 @@ public class AttackAction extends Action {
 			result += System.lineSeparator() + target + " is killed.";
 			return result;
 		}
+		if (target instanceof Voodoo) {
+                ((Voodoo)target).setKilled(true); ///she will never appear again
+            }
+		
 		return result;
 	}
 

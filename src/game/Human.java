@@ -4,6 +4,7 @@ import edu.monash.fit2099.engine.Action;
 import edu.monash.fit2099.engine.Actions;
 import edu.monash.fit2099.engine.Display;
 import edu.monash.fit2099.engine.GameMap;
+import edu.monash.fit2099.engine.*;
 
 /**
  * Class representing an ordinary human.
@@ -37,9 +38,12 @@ public class Human extends ZombieActor {
 	}
 
 	@Override
-	public Action playTurn(Actions actions, Action lastAction, GameMap map, Display display) {
-		// FIXME humans are pretty dumb, maybe they should at least run away from zombies?
-		return behaviour.getAction(this, map);
+public Action playTurn(Actions actions, Action lastAction, GameMap map, Display display) {
+		Action action = behaviour.getAction(this, map);
+		if (action != null) /////
+			return action;
+		return new DoNothingAction();
+
 	}
 
 }

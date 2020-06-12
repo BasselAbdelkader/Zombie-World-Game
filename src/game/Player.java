@@ -14,7 +14,7 @@ import edu.monash.fit2099.engine.*;
 public class Player extends Human {
 	private Display gameDisplay;
 	private boolean allowDisplayAccess = false;
-	
+
 	// If activeWeapon is not null, activeWeapon is used by Player to attack
 	private Weapon activeWeapon;
 
@@ -30,14 +30,14 @@ public class Player extends Human {
 	public Player(String name, char displayChar, int hitPoints) {
 		super(name, displayChar, hitPoints);
 	}
-	
+
 	/**
 	 * @return Return Player's current Hp
 	 */
 	public int hp() {
 		return hitPoints;
 	}
-	
+
 	/**
 	 * @return Display object
 	 */
@@ -47,31 +47,31 @@ public class Player extends Human {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @return Return menu object
 	 */
 	public Menu menu() {
 		return menu;
 	}
-	
+
 	/**
 	 * Sets the Player's active weapon, if set will be prioritized by getWeapon()
 	 * @param weapon
 	 */
 	public void setActiveWeapon(RangedWeapon weapon) {
 		if (weapon != null) {
-			activeWeapon = weapon;			
+			activeWeapon = weapon;
 		}
 	}
-	
+
 	/**
 	 * Resets Player's activeWeapon to null
 	 */
 	public void resetActiveWeapon() {
 		activeWeapon = null;
 	}
-	
+
 	/**
 	 * Return the weapon that should be used to Attack. If activeWeapon has not been set, use original Actor getWeapon()
 	 */
@@ -102,12 +102,11 @@ public class Player extends Human {
           actions.add(new QuitAction());
 		if (lastAction.getNextAction() != null)
 			return lastAction.getNextAction();
+		Action chosenAction = menu.showMenu(this, actions, display);
 		return menu.showMenu(this, actions, display);
 
-		Action chosenAction = menu.showMenu(this, actions, display);
-		
 
-		return chosenAction;
+
 	}
 	private boolean checkWin(GameMap map) {
         int zombies = 0;
@@ -173,6 +172,6 @@ public class Player extends Human {
             }
         }
     }
-    
-	
+
+
 }

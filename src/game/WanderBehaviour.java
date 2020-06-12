@@ -45,7 +45,7 @@ public class WanderBehaviour implements Behaviour {
 		if (!actions.isEmpty()) {
 			// the actor has a location to wander to, so
 			// if actor is a zombie, check legs before wander
-			if (actor.hasCapability(ZombieCapability.UNDEAD)) {
+			if (actor instanceof Zombie) {
 				// Initialize default case: zombie does nothing
 				Action zombieAction = new DoNothingAction();
 				// already checked that actor is a zombie, safe to downcast Actor to Zombie

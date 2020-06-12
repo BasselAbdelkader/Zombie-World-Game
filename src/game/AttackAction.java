@@ -233,7 +233,7 @@ public class AttackAction extends Action {
 			target.hurt(damage);
 			output += actor + " " + weapon.verb() + " " + target + " for " + damage + " damage.";
 			// if target is a zombie, handle limb dropping mechanic
-			if (target.hasCapability(ZombieCapability.UNDEAD)) {
+			if (target instanceof Zombie) {
 				try {
 					output += handleZombieLimb(map);
 				} catch (Exception e) {

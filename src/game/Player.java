@@ -99,10 +99,8 @@ public class Player extends Human {
         }
         createVoodoo(map);
         ///added part ---
-          actions.add(new QuitAction());
-		if (lastAction.getNextAction() != null)
-			return lastAction.getNextAction();
-		Action chosenAction = menu.showMenu(this, actions, display);
+        actions.add(new QuitAction());
+        
 		return menu.showMenu(this, actions, display);
 
 
